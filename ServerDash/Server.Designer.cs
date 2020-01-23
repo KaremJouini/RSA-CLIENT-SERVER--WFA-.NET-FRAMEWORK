@@ -33,7 +33,6 @@
             this.logs_list = new System.Windows.Forms.ListView();
             this.connected_clients_list = new System.Windows.Forms.ListView();
             this.connect_button = new System.Windows.Forms.Button();
-            this.disconnect_button = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -87,23 +86,11 @@
             this.connect_button.UseVisualStyleBackColor = true;
             this.connect_button.Click += new System.EventHandler(this.connect_button_clicked);
             // 
-            // disconnect_button
-            // 
-            this.disconnect_button.Location = new System.Drawing.Point(385, 351);
-            this.disconnect_button.Name = "disconnect_button";
-            this.disconnect_button.Size = new System.Drawing.Size(81, 23);
-            this.disconnect_button.TabIndex = 6;
-            this.disconnect_button.Text = "Disconnect";
-            this.disconnect_button.UseVisualStyleBackColor = true;
-            this.disconnect_button.UseWaitCursor = true;
-            this.disconnect_button.Click += new System.EventHandler(this.disconnect_button_clicked);
-            // 
             // ServerDash
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(766, 450);
-            this.Controls.Add(this.disconnect_button);
             this.Controls.Add(this.connect_button);
             this.Controls.Add(this.connected_clients_list);
             this.Controls.Add(this.logs_list);
@@ -126,7 +113,6 @@
         private System.Windows.Forms.ListView logs_list;
         private System.Windows.Forms.ListView connected_clients_list;
         private System.Windows.Forms.Button connect_button;
-        private System.Windows.Forms.Button disconnect_button;
     }
 }
 

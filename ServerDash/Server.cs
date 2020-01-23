@@ -24,11 +24,13 @@ namespace ServerDash
         Socket listener = null;
         List<Socket> clientSockets = new List<Socket>();
         List<String> clientsNames = new List<String>();
+        Thread recieveThread = null;
         // Recieves clients public keys for futher sends operations
         // dynamic clientsPublicKeys = null;
         int itemIndex = 0;
         RSAService RSAService = new RSAService();
         int currentClientIndex = -1;
+        
 
         public String DisplayBytes(byte[] msg)
         {
@@ -46,6 +48,8 @@ namespace ServerDash
             list.GridLines = true;
         }
 
+
+       //Converts instance to a byte[] to send via the TCP Socket
         byte[] ObjectToByteArray(object obj)
         {
             if (obj == null)
@@ -120,7 +124,7 @@ namespace ServerDash
         public  void  AcceptClients()
         {
 
-            Thread recieveThread = new Thread(RecieveMsg);
+            this.recieveThread = new Thread(RecieveMsg);
             while (true)
             {
                 // Suspend while waiting for 
@@ -156,27 +160,14 @@ namespace ServerDash
                     Console.WriteLine("Client disconnected !");
                 }
 
-                // Data buffer 
+               
                 
 
-                // Start recieving msgs from the client
-               /* recieveThread.Start();
-
-
-
                
-                byte[] message = Encoding.ASCII.GetBytes("You are connected to the server !!!");
-                // Console.WriteLine(DisplayBytes(encryptedtext));
-                // Send a message to Client  
-                // using Send() method 
-                SendMsg(clientSocket,message);
-
-                byte[] RSAKey = ObjectToByteArray(this.RSAService.RSAParamsPublic);
-                Console.WriteLine("Sent RSA key:"+DisplayBytes(RSAKey));
-                SendMsg(clientSocket, RSAKey);*/
             }
         }
 
+        //Recieve Wheel Method
         private void RecieveMsg()
         {
             while (true)
@@ -195,12 +186,13 @@ namespace ServerDash
                 try
                 {
                     String msg = Encoding.ASCII.GetString(decryptedMsg);
+                    // Managing connected clients list
+              
                     this.BeginInvoke((System.Windows.Forms.MethodInvoker)delegate () { logs_list.Items.Add(new ListViewItem(msg, itemIndex)); });
                     itemIndex++;
                 }catch(Exception e)
                 {
-                    this.BeginInvoke((System.Windows.Forms.MethodInvoker)delegate () { logs_list.Items.Add(new ListViewItem("Empty msg recieved", itemIndex)); });
-                    itemIndex++;
+                    Console.WriteLine("No Msgs Recieved ...");
                 }
             }
         }
@@ -231,27 +223,7 @@ namespace ServerDash
         }
 
 
-        private void disconnect_button_clicked(object sender, EventArgs e)
-        {
-            
-            try
-            {
-                listener.Close();
-            }
-            catch (Exception exc)
-            {
-                Console.WriteLine("Failed closing server socket" + exc.Message);
-            }
-            //Closing clients sockets
-            clientSockets.ForEach((s) =>
-            {
-                s.Shutdown(SocketShutdown.Both);
-                s.Close();
-            });
-
-            state = false;
-        }
-
+       
         
         private void connect_button_clicked(object sender, EventArgs e)
         {
@@ -263,6 +235,8 @@ namespace ServerDash
         {
             if (state == true)
             {
+                // Stop the recieving thread to stop recieving from clients in the background
+                this.recieveThread.Abort();
                 try
                 {
                     listener.Close();

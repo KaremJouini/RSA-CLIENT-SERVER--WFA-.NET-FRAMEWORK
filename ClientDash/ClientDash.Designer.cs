@@ -39,6 +39,7 @@
             // 
             // msg
             // 
+            this.msg.Enabled = false;
             this.msg.Location = new System.Drawing.Point(12, 408);
             this.msg.Name = "msg";
             this.msg.Size = new System.Drawing.Size(408, 20);

@@ -58,7 +58,10 @@ namespace ClientDash
 
         private void chat_name_TextChanged(object sender, EventArgs e)
         {
-
+            if (!String.IsNullOrWhiteSpace(this.chat_name.Text))
+            {
+                this.msg.Enabled = true;
+            }
         }
 
 
@@ -112,7 +115,7 @@ namespace ClientDash
 
         private void SendMsg()
         {
-            byte[] plainMessage = Encoding.ASCII.GetBytes(msg.Text);
+            byte[] plainMessage = Encoding.ASCII.GetBytes(this.chat_name.Text + ':'+ msg.Text);
             // Encrypt the msg with the server  PUBLIC RSA KEY
             byte[] encryptedMessage = this.RSAService.Encryption(plainMessage, ServerPublicRSAKey, false);
             int byteSent = sender.Send(encryptedMessage);
