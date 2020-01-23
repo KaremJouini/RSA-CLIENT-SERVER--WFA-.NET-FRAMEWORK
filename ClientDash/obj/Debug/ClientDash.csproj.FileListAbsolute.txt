@@ -1,0 +1,9 @@
+C:\Users\Karem Jouini\source\repos\ClientDash\bin\Debug\ClientDash.exe.config
+C:\Users\Karem Jouini\source\repos\ClientDash\bin\Debug\ClientDash.exe
+C:\Users\Karem Jouini\source\repos\ClientDash\bin\Debug\ClientDash.pdb
+C:\Users\Karem Jouini\source\repos\ClientDash\obj\Debug\ClientDash.csprojAssemblyReference.cache
+C:\Users\Karem Jouini\source\repos\ClientDash\obj\Debug\ClientDash.ClientDash.resources
+C:\Users\Karem Jouini\source\repos\ClientDash\obj\Debug\ClientDash.Properties.Resources.resources
+C:\Users\Karem Jouini\source\repos\ClientDash\obj\Debug\ClientDash.csproj.GenerateResource.cache
+C:\Users\Karem Jouini\source\repos\ClientDash\obj\Debug\ClientDash.exe
+C:\Users\Karem Jouini\source\repos\ClientDash\obj\Debug\ClientDash.pdb

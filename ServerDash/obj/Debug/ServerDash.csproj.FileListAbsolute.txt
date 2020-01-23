@@ -1,0 +1,9 @@
+C:\Users\Karem Jouini\source\repos\ServerDash\bin\Debug\ServerDash.exe.config
+C:\Users\Karem Jouini\source\repos\ServerDash\bin\Debug\ServerDash.exe
+C:\Users\Karem Jouini\source\repos\ServerDash\bin\Debug\ServerDash.pdb
+C:\Users\Karem Jouini\source\repos\ServerDash\obj\Debug\ServerDash.csprojAssemblyReference.cache
+C:\Users\Karem Jouini\source\repos\ServerDash\obj\Debug\ServerDash.ServerDash.resources
+C:\Users\Karem Jouini\source\repos\ServerDash\obj\Debug\ServerDash.Properties.Resources.resources
+C:\Users\Karem Jouini\source\repos\ServerDash\obj\Debug\ServerDash.csproj.GenerateResource.cache
+C:\Users\Karem Jouini\source\repos\ServerDash\obj\Debug\ServerDash.exe
+C:\Users\Karem Jouini\source\repos\ServerDash\obj\Debug\ServerDash.pdb
