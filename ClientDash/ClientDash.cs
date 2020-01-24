@@ -10,7 +10,7 @@ using System.Windows.Forms;
 namespace ClientDash
 {
 
-    
+
     public partial class ClientDash : Form
     {
         RSAService RSAService = new RSAService();
@@ -76,7 +76,7 @@ namespace ClientDash
         private void ClientDash_Load(object sender, EventArgs e)
         {
             Lists_Rendering(chat_log);
-         
+
             Connect();
         }
 
@@ -92,7 +92,7 @@ namespace ClientDash
             int byteRecv = sender.Receive(messageReceived);
             String msg = Encoding.ASCII.GetString(messageReceived,
                                              0, byteRecv);
-            Console.WriteLine("Message from Server -> {0}",msg);
+            Console.WriteLine("Message from Server -> {0}", msg);
             chat_log.Items.Add(new ListViewItem(msg, this.chatLogItemIndex));
             this.chatLogItemIndex++;
         }
@@ -107,7 +107,7 @@ namespace ClientDash
             // received, that we'll use to  
             // convert them to string 
             int byteRecv = sender.Receive(messageReceived);
-            Console.WriteLine("Received RSA KEY:{0}"+DisplayBytes(messageReceived));
+            Console.WriteLine("Received RSA KEY:{0}" + DisplayBytes(messageReceived));
             this.ServerPublicRSAKey = (RSAParameters)FromByteArray<RSAParameters>(messageReceived);
             chat_log.Items.Add(new ListViewItem("SERVER RSA KEY RECIEVED", this.chatLogItemIndex));
             this.chatLogItemIndex++;
@@ -115,7 +115,7 @@ namespace ClientDash
 
         private void SendMsg()
         {
-            byte[] plainMessage = Encoding.ASCII.GetBytes(this.chat_name.Text + ':'+ msg.Text);
+            byte[] plainMessage = Encoding.ASCII.GetBytes(this.chat_name.Text + ':' + msg.Text);
             // Encrypt the msg with the server  PUBLIC RSA KEY
             byte[] encryptedMessage = this.RSAService.Encryption(plainMessage, ServerPublicRSAKey, false);
             int byteSent = sender.Send(encryptedMessage);
@@ -155,7 +155,7 @@ namespace ClientDash
                               sender.RemoteEndPoint.ToString(), itemIndex));
                 itemIndex++;
                 // Generate client RSA KEYS
-                
+
                 //Welcome Msg
                 RecieveMsg();
                 this.RSAService.GenerateKeys();
@@ -182,18 +182,28 @@ namespace ClientDash
 
 
         }
-    
 
-    private void ClientDash_Closed(object sender, FormClosedEventArgs e)
-    {
+        private void SendDisconnectMsg()
+        {
+            byte[] plainMessage = Encoding.ASCII.GetBytes(this.chat_name.Text + ':' + "<EOF>");
+            // Encrypt the msg with the server  PUBLIC RSA KEY
+            byte[] encryptedMessage = this.RSAService.Encryption(plainMessage, ServerPublicRSAKey, false);
+            int byteSent = sender.Send(encryptedMessage);
+        }
+
+
+        private void ClientDash_Closed(object sender, FormClosedEventArgs e)
+        {
+            SendDisconnectMsg();
             try
             {
                 this.sender.Shutdown(SocketShutdown.Both);
                 this.sender.Close();
-            }catch(Exception exc)
+            }
+            catch (Exception exc)
             {
                 Console.WriteLine("Could not close client socket!", exc.ToString());
             }
+        }
     }
-}
 }

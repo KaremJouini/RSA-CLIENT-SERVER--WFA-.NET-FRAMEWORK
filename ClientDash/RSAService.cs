@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Security.Cryptography;
 
 
@@ -68,10 +66,10 @@ namespace ClientDash
             try
             {
                 byte[] decryptedData;
-                
-                    RSA.ImportParameters(RSAKey);
-                    decryptedData = RSA.Decrypt(Data, DoOAEPPadding);
-                
+
+                RSA.ImportParameters(RSAKey);
+                decryptedData = RSA.Decrypt(Data, DoOAEPPadding);
+
                 return decryptedData;
             }
             catch (CryptographicException e)

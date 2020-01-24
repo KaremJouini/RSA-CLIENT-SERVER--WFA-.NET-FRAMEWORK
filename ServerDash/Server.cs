@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ServerDash
@@ -24,13 +18,14 @@ namespace ServerDash
         Socket listener = null;
         List<Socket> clientSockets = new List<Socket>();
         List<String> clientsNames = new List<String>();
+        int connectedClientsIndex = 0;
         Thread recieveThread = null;
         // Recieves clients public keys for futher sends operations
         // dynamic clientsPublicKeys = null;
         int itemIndex = 0;
         RSAService RSAService = new RSAService();
         int currentClientIndex = -1;
-        
+
 
         public String DisplayBytes(byte[] msg)
         {
@@ -49,7 +44,7 @@ namespace ServerDash
         }
 
 
-       //Converts instance to a byte[] to send via the TCP Socket
+        //Converts instance to a byte[] to send via the TCP Socket
         byte[] ObjectToByteArray(object obj)
         {
             if (obj == null)
@@ -62,7 +57,7 @@ namespace ServerDash
             }
         }
 
-        
+
 
 
 
@@ -113,15 +108,15 @@ namespace ServerDash
             }
         }
 
-        public void SendMsg(Socket clientSocket,byte[] msg)
+        public void SendMsg(Socket clientSocket, byte[] msg)
         {
             clientSocket.Send(msg);
         }
 
 
-       
 
-        public  void  AcceptClients()
+
+        public void AcceptClients()
         {
 
             this.recieveThread = new Thread(RecieveMsg);
@@ -155,15 +150,15 @@ namespace ServerDash
                     Console.WriteLine("Sent RSA key:" + DisplayBytes(RSAKey));
                     SendMsg(clientSocket, RSAKey);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine("Client disconnected !");
                 }
 
-               
-                
 
-               
+
+
+
             }
         }
 
@@ -180,17 +175,41 @@ namespace ServerDash
                 int numByte = clientSockets[currentClientIndex].Receive(encryptedMsg);
 
                 Console.WriteLine("Recieved encrypted msg from client" + DisplayBytes(encryptedMsg));
-                decryptedMsg = this.RSAService.Decryption(encryptedMsg, this.RSAService.RSAParamsPrivate,false);
+                decryptedMsg = this.RSAService.Decryption(encryptedMsg, this.RSAService.RSAParamsPrivate, false);
                 Console.WriteLine("Decrypted msg from client" + decryptedMsg);
 
                 try
                 {
                     String msg = Encoding.ASCII.GetString(decryptedMsg);
+                    String[] msgArray = msg.Split(':');
                     // Managing connected clients list
-              
+
+                    bool existant = clientsNames.Contains(msgArray[0]);
+                    Console.WriteLine("Existance test:" + existant);
+                    if (existant == false) // client name not in connected clients name
+                    {
+                        if (!msgArray[1].Equals("<EOF>"))
+                        {
+
+                            clientsNames.Add(msgArray[0]);
+                            int index = clientsNames.IndexOf(msgArray[0]);
+                            this.BeginInvoke((System.Windows.Forms.MethodInvoker)delegate () { connected_clients_list.Items.Add(new ListViewItem(msgArray[0], index)); });
+                        }
+                    }
+                    else //Found 
+                    {
+                        if (msgArray[1].Equals("<EOF>"))
+                        { //Disconnect msg recieved
+
+                            int index = clientsNames.IndexOf(msgArray[0]);
+                            clientsNames.Remove(msgArray[0]);
+                            this.BeginInvoke((System.Windows.Forms.MethodInvoker)delegate () { connected_clients_list.Items.RemoveAt(index); });
+                        }
+                    }
                     this.BeginInvoke((System.Windows.Forms.MethodInvoker)delegate () { logs_list.Items.Add(new ListViewItem(msg, itemIndex)); });
                     itemIndex++;
-                }catch(Exception e)
+                }
+                catch (Exception e)
                 {
                     Console.WriteLine("No Msgs Recieved ...");
                 }
@@ -207,30 +226,30 @@ namespace ServerDash
 
             Thread th = new Thread(AcceptClients);
             th.Start();
-        } 
-    
+        }
+
 
         public ServerDash()
         {
             InitializeComponent();
-            
+
         }
 
 
         private void ServerDash_Load(object sender, EventArgs e)
         {
-          
+
         }
 
 
-       
-        
+
+
         private void connect_button_clicked(object sender, EventArgs e)
         {
-            
+
             ExecuteServer();
         }
-       
+
         private void ServerDash_Closing(object sender, FormClosingEventArgs e)
         {
             if (state == true)
